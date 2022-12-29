@@ -23,7 +23,7 @@ jobs:
         with:
           java-version: 1.8
       - name: Build android
-        run: ./gradlew assembleRelease
+        run: chmod +x gradlew && ./gradlew assembleRelease
       - name: upload apk
         uses: actions/upload-artifact@v2
         with:
