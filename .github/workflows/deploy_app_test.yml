@@ -6,9 +6,9 @@ on:
       
 env:
   APP_CENTER_TOKEN: ${{ secrets.APPCENTER_TOKEN_TIME_MANAGER_TEST }}
-  APP_NAME: ${{ ‘Time-Manager-Android/ENV_TEST’ }}
-  TESTING_GROUP: ${{ ‘ENV_TEST’ }}
-  UPLOAD_FILE: ${{ ‘android/app/build/outputs/apk/app-release.apk' }}
+  APP_NAME: ${{ 'Time-Manager-Android/ENV_TEST' }}
+  TESTING_GROUP: ${{ 'ENV_TEST' }}
+  UPLOAD_FILE: ${{ 'android/app/build/outputs/apk/app-release.apk' }}
   
 jobs:
   build:
@@ -22,10 +22,13 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 1.8
-      - name: Install dependencies
-        run: npm install
       - name: Build android
-        run: npm run cd android && ./gradlew assembleRelease
+        run: ./gradlew assembleRelease
+      - name: upload apk
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ env.UPLOAD_FILE }}
+          path: android/app/build/outputs/apk/app-release.apk
       - name: Upload to App Center
         uses: wzieba/AppCenter-Github-Action@v1
         with:
