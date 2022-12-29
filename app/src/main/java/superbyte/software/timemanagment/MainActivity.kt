@@ -1,34 +1,54 @@
 package superbyte.software.timemanagment
 
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
+import android.view.Menu
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
-import androidx.navigation.ui.setupActionBarWithNavController
-import android.view.Menu
-import android.view.MenuItem
-import superbyte.software.timemanagment.databinding.ActivityMainBinding
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.snackbar.Snackbar
+import superbyte.software.timemanagment.calendar.CalendarFragment
+import superbyte.software.timemanagment.home.HomeFragment
+import superbyte.software.timemanagment.settings.SettingsFragment
+
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
-    private lateinit var binding: ActivityMainBinding
+
+    private val navListener =
+        BottomNavigationView.OnNavigationItemSelectedListener { item ->
+            var selectedFragment: Fragment = HomeFragment()
+            when (item.itemId) {
+                R.id.nav_home -> selectedFragment = HomeFragment()
+                R.id.nav_calendar -> selectedFragment = CalendarFragment()
+                R.id.nav_personalize -> selectedFragment = SettingsFragment()
+                R.id.nav_settings -> selectedFragment = SettingsFragment()
+            }
+            supportFragmentManager.beginTransaction().replace(
+                R.id.fragment_container,
+                selectedFragment
+            ).commit()
+            true
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+        val bottomNav = findViewById<BottomNavigationView>(R.id.bottom_navigation)
+        bottomNav.setOnNavigationItemSelectedListener(navListener)
+        //initialize on the home fragment
+        supportFragmentManager.beginTransaction().replace(
+            R.id.fragment_container,
+            HomeFragment()
+        ).commit()
+        val fab = findViewById<FloatingActionButton>(R.id.fab)
 
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-
-        setSupportActionBar(binding.toolbar)
-
-        val navController = findNavController(R.id.nav_host_fragment_content_main)
-        appBarConfiguration = AppBarConfiguration(navController.graph)
-        setupActionBarWithNavController(navController, appBarConfiguration)
-
-        binding.fab.setOnClickListener { view ->
+        fab.setOnClickListener { view ->
             Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show()
         }
